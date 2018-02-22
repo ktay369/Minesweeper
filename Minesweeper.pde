@@ -3,6 +3,7 @@
 import de.bezier.guido.*;
 public static final int NUM_ROWS = 20; 
 public static final int NUM_COLS = 20;
+public static final int NUM_BOMBS = 5;
 private MSButton[][] buttons; //2d array of minesweeper buttons
 private ArrayList <MSButton> bombs = new ArrayList<MSButton>(); //ArrayList of just the minesweeper buttons that are mined
 
@@ -10,7 +11,6 @@ void setup ()
 {
     size(400, 400);
     textAlign(CENTER,CENTER);
-    
     // make the manager
     Interactive.make( this );
     
@@ -21,16 +21,20 @@ void setup ()
     for(int c=0; c<buttons[r].length; c++)
     buttons[r][c] = new MSButton(r, c);
   }
-    setBombs(3);
+    setBombs();
 }
-public void setBombs(int n)
+public void setBombs()
 {
-  for(int b=0; b<n; b++){
+  while(bombs.size()<NUM_BOMBS)
+  {
     int row, col;
     row = (int)(Math.random()*NUM_ROWS);
     col = (int)(Math.random()*NUM_COLS);
+    if(!bombs.contains(buttons[row][col])){
     bombs.add(buttons[row][col]);
     System.out.println(row+","+col);
+    }
+    
   }
 }
 
@@ -110,13 +114,21 @@ public class MSButton
     }
     public boolean isValid(int r, int c)
     {
-        //write stuff
+        if(r>-1&&r<buttons.length&&c>-1&&c<buttons[r].length)
+        return true;
         return false;
     }
     public int countBombs(int row, int col)
     {
         int numBombs = 0;
-        //your code here
+        for(r=-1;r<2;r++){
+          for(c=-1; c<2; c++){
+            if(!(r==0&&c==0)){
+            if(bombs.contains(buttons[row+r][col+c]))
+            numBombs++;
+            }
+          }
+        }
         return numBombs;
     }
 }
